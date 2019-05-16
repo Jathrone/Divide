@@ -10,6 +10,15 @@ const Util = {
 
     calcDistance(pos1, pos2) {
         return Math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2)
+    },
+
+    calcFriction (vel, radius, coeff) {
+        const magnitude = Util.magnitude(vel);
+        return [-(vel[0] * (magnitude ** 2) * radius * coeff), -(vel[1] * (magnitude ** 2) * radius * coeff)];
+    },
+
+    magnitude(vel) {
+        return Util.calcDistance([0,0], vel)
     }
 }
 
