@@ -1,5 +1,27 @@
 const { calcDistance, calcFriction, magnitude } = require("./util");
 
+let frictionCoefficient;
+let density;
+document.addEventListener("DOMContentLoaded", () => {
+    const frictionInput = document.getElementById("friction");
+    const densityInput = document.getElementById("density");
+    function updateFriction(value) {
+        frictionCoefficient = value
+    };
+
+    function updateDensity(value) {
+        density = value
+    };
+
+    frictionInput.addEventListener("change", (e) => {
+        updateFriction(0.5 ** e.currentTarget.value);
+    })
+    densityInput.addEventListener("change", (e) => {
+        updateDensity(e.currentTarget.value * 0.001);
+    })
+})
+
+
 class MovingObject {
     constructor({ pos, vel, acc, radius, color, energy, board}) {
         this.pos = pos;
@@ -35,7 +57,7 @@ class MovingObject {
         if (this.energy < 0) {
             return false
         } else {
-            this.energy -= MovingObject.DENSITY * (this.radius ** 2) * this.acc;
+            this.energy -= MovingObject.DENSITY * (this.radius ** 2) * magnitude(this.acc);
             this.calculateVel();
             this.pos = this.board.wrap([this.pos[0] + this.vel[0], this.pos[1] + this.vel[1]])
             return true
@@ -63,11 +85,12 @@ class MovingObject {
     }
 
     static get FRICTION_COEFFICIENT() {
-        return 0.00001;
+        return frictionCoefficient || 0.5 ** 5;
     }
 
     static get DENSITY() {
-        return 0.001;
+        // return document.getElementById("friction").value;
+        return density || 0.0001;
     }
 }
 
