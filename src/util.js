@@ -65,6 +65,34 @@ const Util = {
 
     sigmoid(t) {
         return 1/(1 + Math.exp(-t));
+    },
+
+    randomNearbyInt(number) {
+        const stepDist = 10;
+        const maxNum = 255;
+        let startNum;
+        if (number < stepDist) {
+            startNum = 0;
+        } else if (number >= maxNum - stepDist) {
+            startNum = maxNum - 2 * stepDist + 1;
+        } else {
+            startNum = number - stepDist;
+        }
+        return startNum + Math.floor(2 * stepDist * Math.random());
+    },
+
+    randomNearbyColor(hexcolor) {
+        const hexR = parseInt(hexcolor.slice(1, 3), 16);
+        const hexG = parseInt(hexcolor.slice(3, 5), 16);
+        const hexB = parseInt(hexcolor.slice(5, 7), 16);
+        const newHexR = Util.randomNearbyInt(hexR).toString(16);
+        const newHexG = Util.randomNearbyInt(hexG).toString(16);
+        const newHexB = Util.randomNearbyInt(hexB).toString(16);
+        return "#" + newHexR + newHexG + newHexB;
+    },
+
+    randomColor() {
+        return "#" + Math.floor(256 ** 3 * Math.random()).toString(16)
     }
 }
 

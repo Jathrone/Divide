@@ -3,15 +3,18 @@ const math = require("mathjs");
 const { randomVector, randomAngleAcc, randomWeightMatrix, calcDistance, magnitude, calcFriction, turnByAngle, distanceToCircleBoundary, vectorTo, sigmoid } = require("./util");
 
 class Cell extends MovingObject {
-    constructor(pos, board, color) {
+    constructor(pos, board, color, sensoryNum, weightMatrix1, weightMatrix2) {
         super({ pos, vel: [0,0], acc: [0,0], angAcc: 0, radius: 20, color: color || Cell.COLOR, board, energy: Cell.INIT_ENERGY })
         this.sensoryNum = 8
         this.senseArray = []
+        this.memoryArray = math.zeros(this.sensoryNum * 3)._data;
         this.direction = 2 * Math.PI * Math.random();
         this.acc = vectorTo([0,0], this.direction, Cell.MAX_ACCELERATION);
-        this.weightMatrix1 = randomWeightMatrix([this.sensoryNum, 8]);
-        this.weightMatrix2 = randomWeightMatrix([8, 2]);
-        this.radius = Math.sqrt(this.energy) * 5;
+        let randomWeightMatrix1 = randomWeightMatrix([this.memoryArray.length, 30]);
+        let randomWeightMatrix2 = randomWeightMatrix([30, 2]);
+        this.weightMatrix1 = weightMatrix1 ? math.add(math.multiply(weightMatrix1, 0.95), math.multiply(randomWeightMatrix1, 0.05)) : randomWeightMatrix1;
+        this.weightMatrix2 = weightMatrix2 ? math.add(math.multiply(weightMatrix2, 0.95), math.multiply(randomWeightMatrix2, 0.05)) : randomWeightMatrix2;
+        this.radius = Math.sqrt(this.energy) * 2;
     }
 
     getSenseDist(senseAng) {
@@ -29,16 +32,22 @@ class Cell extends MovingObject {
     }
 
     getSenseArray() {
-        this.senseArray = [];
+        this.senseArray = []
         for (let i = 0; i < this.sensoryNum; i++) {
             let senseAng = (2 * Math.PI * i / this.sensoryNum + this.direction) % (2 * Math.PI);
             this.senseArray.push(1 - this.getSenseDist(senseAng)/Cell.MAX_SENSE_DIST);
         }
+        this.storeMemory();
+    }
+
+    storeMemory() {
+        this.memoryArray = this.memoryArray.slice(0, 2*this.sensoryNum);
+        this.memoryArray = this.senseArray.concat(this.memoryArray);
     }
     calculateAcc() {
         this.getSenseArray();
         let layerH;
-        layerH = math.multiply(this.senseArray, this.weightMatrix1);
+        layerH = math.multiply(this.memoryArray, this.weightMatrix1);
         layerH = layerH.map(function (value, index, matrix) {
             return sigmoid(value);
         })
@@ -57,11 +66,11 @@ class Cell extends MovingObject {
         if (this.energy < 0) {
             this.board.remove(this);
         }
-        else if (this.energy > 100) {
+        else if (this.energy > 20) {
             this.board.divideCell(this);
         } else {
             this.energy -= MovingObject.DENSITY * (this.radius ** 2) * magnitude(this.acc);
-            this.energy -= 0.001
+            this.energy -= 0.01
             this.direction += this.angAcc;
             this.acc = turnByAngle(this.acc, this.angAcc);
             this.calculateVel();
@@ -81,7 +90,7 @@ class Cell extends MovingObject {
     }
 
     draw(ctx) {
-        this.radius = Math.sqrt(this.energy) * 5;
+        this.radius = Math.sqrt(this.energy) * 2;
 
         ctx.fillStyle = this.color;
         ctx.beginPath();
@@ -107,7 +116,7 @@ class Cell extends MovingObject {
             let senseAng = (2 * Math.PI * i / this.sensoryNum + this.direction) % (2 * Math.PI);
             ctx.beginPath();
             ctx.moveTo(this.pos[0], this.pos[1]);
-            let endPoint = vectorTo(this.pos, senseAng, 200 - senseArrayTrueDist[i])
+            let endPoint = vectorTo(this.pos, senseAng, Cell.MAX_SENSE_DIST - senseArrayTrueDist[i])
             ctx.lineTo(endPoint[0], endPoint[1])
             // ctx.fillText(200 - senseArrayTrueDist[i], (this.pos[0] + endPoint[0]) / 2, (this.pos[1] + endPoint[1]) / 2)
             ctx.stroke();
@@ -136,7 +145,7 @@ class Cell extends MovingObject {
     }
 
     static get MAX_SENSE_DIST() {
-        return 200;
+        return 80;
     }
 
 }

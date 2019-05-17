@@ -1,5 +1,6 @@
 const Cell = require('./cell');
 const Food = require('./food');
+const { randomColor, randomNearbyColor } = require("./util");
 
 class Board {
     constructor(dimX, dimY) {
@@ -13,19 +14,18 @@ class Board {
 
     addCells() {
         for (let i=0; i < Board.NUM_INIT_CELLS; i++) {
-            this.cells.push(new Cell(this.randomPosition(), this))
+            this.cells.push(new Cell(this.randomPosition(), this, randomColor()))
         }
     }
 
-    addCell(pos) {
-        debugger;
-        this.cells.push(new Cell(pos, this, "#d584de"));
+    addCell(pos, color, sNum, wM1, wM2) {
+        const newColor = randomNearbyColor(color);
+        this.cells.push(new Cell(pos, this, newColor, sNum, wM1, wM2));
+        this.cells.push(new Cell(pos, this, newColor, sNum, wM1, wM2));
     }
 
     divideCell(cell) {
-        debugger
-        this.addCell(cell.pos);
-        this.addCell(cell.pos);
+        this.addCell(cell.pos, cell.color, cell.sensoryNum, cell.weightMatrix1, cell.weightMatrix2);
         this.remove(cell);
     }
 
@@ -37,7 +37,9 @@ class Board {
 
     addStepFood() {
         for (let i=0; i < Board.NUM_STEP_FOOD; i++) {
-            this.food.push(new Food(this.randomPosition(), this))
+            if (Math.random() < 0.1) {
+                this.food.push(new Food(this.randomPosition(), this))
+            }
         }
     }
 
@@ -97,15 +99,15 @@ class Board {
     }
 
     static get NUM_INIT_CELLS() {
-        return 5;
+        return 15;
     }
 
     static get NUM_INIT_FOOD() {
-        return 100;
+        return 1000;
     }
 
     static get NUM_STEP_FOOD() {
-        return 0;
+        return 1;
     }
 }
 
