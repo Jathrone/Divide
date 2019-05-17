@@ -1,4 +1,4 @@
-const { calcDistance, calcFriction, magnitude } = require("./util");
+const { calcDistance, calcFriction, magnitude, turnByAngle } = require("./util");
 
 let frictionCoefficient;
 let density;
@@ -23,17 +23,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 class MovingObject {
-    constructor({ pos, vel, acc, radius, color, energy, board}) {
+    constructor({ pos, vel, acc, angAcc, radius, color, energy, board}) {
         this.pos = pos;
         this.vel = vel; 
         this.acc = acc;
+        this.angAcc = angAcc;
         this.radius = radius;
+        // this.radius = Math.sqrt(energy) * 5;
         this.color = color;
         this.board = board;
         this.energy = energy;
     }
 
     draw(ctx) {
+        debugger;
+        // this.radius = Math.sqrt(this.energy) * 5;
+
         ctx.fillStyle = this.color;
         ctx.beginPath();
 
@@ -62,7 +67,9 @@ class MovingObject {
         } else {
             this.energy -= MovingObject.DENSITY * (this.radius ** 2) * magnitude(this.acc);
             this.calculateVel();
-            this.pos = this.board.wrap([this.pos[0] + this.vel[0], this.pos[1] + this.vel[1]])
+            this.vel = turnByAngle(this.vel, this.angAcc);
+            this.acc = turnByAngle(this.acc, this.angAcc);
+            this.pos = this.board.wrap([this.pos[0] + this.vel[0], this.pos[1] + this.vel[1]]);
             return true
         }
     }
@@ -92,7 +99,6 @@ class MovingObject {
     }
 
     static get DENSITY() {
-        // return document.getElementById("friction").value;
         return density || 0.0001;
     }
 }

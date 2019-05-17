@@ -1,3 +1,5 @@
+const math = require("mathjs");
+
 const Util = {
     randomVector(length) {
         const deg = 2 * Math.PI * Math.random();
@@ -19,6 +21,48 @@ const Util = {
 
     magnitude(vel) {
         return Util.calcDistance([0,0], vel)
+    },
+
+    randomAngleAcc(max) {
+        return 2 * max * Math.random()- max;
+
+    },
+
+    turnByAngle(vel, angAcc) {
+        let currAng = Math.atan(vel[1] / vel[0]);
+        if (vel[0] < 0 ) {
+            currAng += Math.PI ;
+        }
+        const newVel = [Math.cos(currAng + angAcc) * Util.magnitude(vel), Math.sin(currAng + angAcc) * Util.magnitude(vel)]
+        return newVel;
+    },
+
+    randomWeightMatrix(size) {
+        return math.random(size);
+    },
+
+    distanceToCircleBoundary(posFrom, posObj, senseAng, radiusObj) {
+        let totalAng;
+        totalAng = Math.atan((posObj[1] - posFrom[1])/(posObj[0] - posFrom[0]));
+        if ((posObj[0] - posFrom[0]) < 0) {
+            debugger;
+            totalAng += Math.PI;
+        }
+        if (totalAng < 0) {
+            totalAng += 2 * Math.PI;
+        }
+        const dist = Util.calcDistance(posFrom, posObj);
+        const angDiff = Math.abs(totalAng - senseAng);
+        debugger;
+        if ((angDiff < Math.PI / 2) && ((dist * Math.sin(angDiff)) < radiusObj)) {
+            return (dist * Math.cos(angDiff) - Math.sqrt(radiusObj ** 2 - (Math.sin(angDiff) ** 2)));
+        } else {
+            return false;
+        }
+    },
+
+    vectorTo(startPos, angle, dist) {
+        return [startPos[0] + dist * Math.cos(angle), startPos[1] + dist * Math.sin(angle)]
     }
 }
 

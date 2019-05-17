@@ -12,7 +12,7 @@ class Board {
     }
 
     addCells() {
-        for (let i=0; i <= Board.NUM_INIT_CELLS; i++) {
+        for (let i=0; i < Board.NUM_INIT_CELLS; i++) {
             this.cells.push(new Cell(this.randomPosition(), this))
         }
     }
@@ -30,13 +30,13 @@ class Board {
     }
 
     addInitFood() {
-        for (let i=0; i <= Board.NUM_INIT_FOOD; i++) {
+        for (let i=0; i < Board.NUM_INIT_FOOD; i++) {
             this.food.push(new Food(this.randomPosition(), this))
         }
     }
 
     addStepFood() {
-        for (let i=0; i <= Board.NUM_STEP_FOOD; i++) {
+        for (let i=0; i < Board.NUM_STEP_FOOD; i++) {
             this.food.push(new Food(this.randomPosition(), this))
         }
     }
@@ -59,6 +59,7 @@ class Board {
 
     moveObjects() {
         this.cells.forEach( (cell) => {
+
             cell.move();
         })
     }
@@ -96,15 +97,15 @@ class Board {
     }
 
     static get NUM_INIT_CELLS() {
-        return 20;
+        return 1;
     }
 
     static get NUM_INIT_FOOD() {
-        return 20;
+        return 40;
     }
 
     static get NUM_STEP_FOOD() {
-        return 1;
+        return 0;
     }
 }
 

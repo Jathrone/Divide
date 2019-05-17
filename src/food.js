@@ -10,7 +10,7 @@ class Food extends MovingObject {
     }
 
     static get RADIUS() {
-        return 5;
+        return 15;
     }
 
     static get COLOR() {
