@@ -38,7 +38,7 @@ const Util = {
     },
 
     randomWeightMatrix(size) {
-        return math.random(size);
+        return math.matrix(math.random(size)).map(function(val) {return val * 2 - 1});
     },
 
     distanceToCircleBoundary(posFrom, posObj, senseAng, radiusObj) {

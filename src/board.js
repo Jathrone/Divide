@@ -97,11 +97,11 @@ class Board {
     }
 
     static get NUM_INIT_CELLS() {
-        return 1;
+        return 5;
     }
 
     static get NUM_INIT_FOOD() {
-        return 40;
+        return 100;
     }
 
     static get NUM_STEP_FOOD() {
