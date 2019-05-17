@@ -36,7 +36,6 @@ class MovingObject {
     }
 
     draw(ctx) {
-        debugger;
         // this.radius = Math.sqrt(this.energy) * 5;
 
         ctx.fillStyle = this.color;
