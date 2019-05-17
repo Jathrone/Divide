@@ -17,6 +17,18 @@ class Board {
         }
     }
 
+    addCell(pos) {
+        debugger;
+        this.cells.push(new Cell(pos, this, "#d584de"));
+    }
+
+    divideCell(cell) {
+        debugger
+        this.addCell(cell.pos);
+        this.addCell(cell.pos);
+        this.remove(cell);
+    }
+
     addInitFood() {
         for (let i=0; i <= Board.NUM_INIT_FOOD; i++) {
             this.food.push(new Food(this.randomPosition(), this))
@@ -76,6 +88,10 @@ class Board {
     remove(item) {
         this.food = this.food.filter((foodEle) => {
             return (foodEle !== item)
+        })
+
+        this.cells = this.cells.filter((cell) => {
+            return (cell !== item)
         })
     }
 

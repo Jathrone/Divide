@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFriction(0.5 ** e.currentTarget.value);
     })
     densityInput.addEventListener("change", (e) => {
-        updateDensity(e.currentTarget.value * 0.001);
+        updateDensity(e.currentTarget.value * 0.00001);
     })
 })
 
@@ -55,7 +55,10 @@ class MovingObject {
 
     move() {
         if (this.energy < 0) {
-            return false
+            this.board.remove(this);
+        }
+        else if (this.energy > 100) {
+            this.board.divideCell(this);
         } else {
             this.energy -= MovingObject.DENSITY * (this.radius ** 2) * magnitude(this.acc);
             this.calculateVel();
@@ -85,7 +88,7 @@ class MovingObject {
     }
 
     static get FRICTION_COEFFICIENT() {
-        return frictionCoefficient || 0.5 ** 5;
+        return frictionCoefficient || 0.5 ** 10;
     }
 
     static get DENSITY() {

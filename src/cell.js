@@ -2,8 +2,8 @@ const MovingObject = require("./moving_object");
 const { randomVector } = require("./util");
 
 class Cell extends MovingObject {
-    constructor(pos, board) {
-        super({ pos, vel: randomVector(Cell.SPEED), acc: randomVector(Cell.ACCELERATION), radius: 20, color: Cell.COLOR, board, energy: Cell.INIT_ENERGY })
+    constructor(pos, board, color) {
+        super({ pos, vel: randomVector(Cell.SPEED), acc: randomVector(Cell.ACCELERATION), radius: 20, color: color || Cell.COLOR, board, energy: Cell.INIT_ENERGY })
         // this.energy = energy;
     }
 
@@ -21,8 +21,10 @@ class Cell extends MovingObject {
     
 
     static get INIT_ENERGY() {
-        return 100;
+        return 10;
     }
+
+
 }
 
 module.exports = Cell;
