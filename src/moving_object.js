@@ -78,8 +78,13 @@ class MovingObject {
     }
 
     consume(otherObject) {
-        this.board.remove(otherObject);
-        this.energy += otherObject.energy;
+        if (otherObject.energy < 2) {
+            this.board.remove(otherObject);
+            this.energy += otherObject.energy;
+        } else {
+            otherObject.energy -= this.energy * 0.2;
+            this.energy += this.energy * 0.2;
+        }
     }
 
 

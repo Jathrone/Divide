@@ -5,8 +5,8 @@ const { randomVector, randomAngleAcc, randomWeightMatrix, calcDistance, magnitud
 class Cell extends MovingObject {
     constructor(pos, board, color, sensoryNum, weightMatrix1, weightMatrix2) {
         super({ pos, vel: [0,0], acc: [0,0], angAcc: 0, radius: 20, color: color || Cell.COLOR, board, energy: Cell.INIT_ENERGY })
-        this.sensoryNum = 8
-        this.senseArray = []
+        this.sensoryNum = 8;
+        this.senseArray = [];
         this.memoryArray = math.zeros(this.sensoryNum * 3)._data;
         this.direction = 2 * Math.PI * Math.random();
         this.acc = vectorTo([0,0], this.direction, Cell.MAX_ACCELERATION);
@@ -18,24 +18,40 @@ class Cell extends MovingObject {
     }
 
     getSenseDist(senseAng) {
-        minDist = Cell.MAX_SENSE_DIST;
+        minFoodDist = Cell.MAX_SENSE_DIST;
         const food = this.board.food;
         for (let i = 0; i < food.length; i++) {
             if (calcDistance(this.pos, food[i].pos) < Cell.MAX_SENSE_DIST) {
                 let currDist = distanceToCircleBoundary(this.pos, food[i].pos, senseAng, food[i].radius);
-                if (currDist && (currDist < minDist)) {
-                    minDist = currDist;
+                if (currDist && (currDist < minFoodDist)) {
+                    minFoodDist = currDist;
                 }
             }
         }
-        return minDist;
+
+        minCellDist = Cell.MAX_SENSE_DIST;
+        const otherCells = this.board.cells.filter((cell) => (cell !== this))
+        for (let i = 0; i < otherCells.length; i++) {
+            if (calcDistance(this.pos, otherCells[i].pos) < Cell.MAX_SENSE_DIST) {
+                let currDist = distanceToCircleBoundary(this.pos, otherCells[i].pos, senseAng, otherCells[i].radius);
+                if (currDist && (currDist < minCellDist)) {
+                    minCellDist = currDist;
+                }
+            }
+        }
+
+        if (minCellDist < minFoodDist) {
+            return minCellDist - Cell.MAX_SENSE_DIST;
+        } else {
+            return minFoodDist;
+        }
     }
 
     getSenseArray() {
         this.senseArray = []
         for (let i = 0; i < this.sensoryNum; i++) {
             let senseAng = (2 * Math.PI * i / this.sensoryNum + this.direction) % (2 * Math.PI);
-            this.senseArray.push(1 - this.getSenseDist(senseAng)/Cell.MAX_SENSE_DIST);
+            this.senseArray.push(this.getSenseDist(senseAng)/Cell.MAX_SENSE_DIST);
         }
         this.storeMemory();
     }
@@ -66,8 +82,9 @@ class Cell extends MovingObject {
         if (this.energy < 0) {
             this.board.remove(this);
         }
-        else if (this.energy > 20) {
+        else if (this.energy > 50) {
             this.board.divideCell(this);
+            this.energy = 20;
         } else {
             this.energy -= MovingObject.DENSITY * (this.radius ** 2) * magnitude(this.acc);
             this.energy -= 0.01
@@ -109,14 +126,20 @@ class Cell extends MovingObject {
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         ctx.fillText(this.energy, this.pos[0], this.pos[1])
+        ctx.stroke();
 
         senseArrayTrueDist = math.multiply(math.matrix(this.senseArray), Cell.MAX_SENSE_DIST)._data;
 
         for (let i = 0; i < this.sensoryNum; i++) {
             let senseAng = (2 * Math.PI * i / this.sensoryNum + this.direction) % (2 * Math.PI);
+            ctx.strokeStyle = "black";
+            if (senseArrayTrueDist[i] < 0) {
+                ctx.strokeStyle = "red";
+            }
             ctx.beginPath();
             ctx.moveTo(this.pos[0], this.pos[1]);
-            let endPoint = vectorTo(this.pos, senseAng, Cell.MAX_SENSE_DIST - senseArrayTrueDist[i])
+            let endPoint = vectorTo(this.pos, senseAng, Math.abs(senseArrayTrueDist[i]))
+            ctx.fillStyle = "red";
             ctx.lineTo(endPoint[0], endPoint[1])
             // ctx.fillText(200 - senseArrayTrueDist[i], (this.pos[0] + endPoint[0]) / 2, (this.pos[1] + endPoint[1]) / 2)
             ctx.stroke();
@@ -133,11 +156,11 @@ class Cell extends MovingObject {
     }
 
     static get MAX_ACCELERATION() {
-        return 1;
+        return 2;
     }
     
     static get MAX_TURN_DEGREE() {
-        return 0.05;
+        return 0.3;
     }
 
     static get INIT_ENERGY() {

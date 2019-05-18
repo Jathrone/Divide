@@ -20,13 +20,13 @@ class Board {
 
     addCell(pos, color, sNum, wM1, wM2) {
         const newColor = randomNearbyColor(color);
-        this.cells.push(new Cell(pos, this, newColor, sNum, wM1, wM2));
-        this.cells.push(new Cell(pos, this, newColor, sNum, wM1, wM2));
+        this.cells.push(new Cell([pos[0] + 100, pos[1] - 100], this, newColor, sNum, wM1, wM2));
+        this.cells.push(new Cell([pos[0] - 100, pos[1] + 100], this, newColor, sNum, wM1, wM2));
     }
 
     divideCell(cell) {
         this.addCell(cell.pos, cell.color, cell.sensoryNum, cell.weightMatrix1, cell.weightMatrix2);
-        this.remove(cell);
+        // this.remove(cell);
     }
 
     addInitFood() {
@@ -79,6 +79,12 @@ class Board {
                     this.cells[i].consume(this.food[j])
                 }
             }
+
+            for (let k=i+1; k < this.cells.length; k++) {
+                if (this.cells[i].isConsuming(this.cells[k])) {
+                    this.cells[i].consume(this.cells[k])
+                }
+            }
         }
     }
 
@@ -99,7 +105,7 @@ class Board {
     }
 
     static get NUM_INIT_CELLS() {
-        return 15;
+        return 30;
     }
 
     static get NUM_INIT_FOOD() {
@@ -107,7 +113,7 @@ class Board {
     }
 
     static get NUM_STEP_FOOD() {
-        return 1;
+        return 10;
     }
 }
 
