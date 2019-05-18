@@ -1,5 +1,6 @@
 const Cell = require('./cell');
 const Food = require('./food');
+const { randomColor, randomNearbyColor } = require("./util");
 
 class Board {
     constructor(dimX, dimY) {
@@ -12,32 +13,33 @@ class Board {
     }
 
     addCells() {
-        for (let i=0; i <= Board.NUM_INIT_CELLS; i++) {
-            this.cells.push(new Cell(this.randomPosition(), this))
+        for (let i=0; i < Board.NUM_INIT_CELLS; i++) {
+            this.cells.push(new Cell(this.randomPosition(), this, randomColor()))
         }
     }
 
-    addCell(pos) {
-        debugger;
-        this.cells.push(new Cell(pos, this, "#d584de"));
+    addCell(pos, color, sNum, wM1, wM2) {
+        const newColor = randomNearbyColor(color);
+        this.cells.push(new Cell([pos[0] + 100, pos[1] - 100], this, newColor, sNum, wM1, wM2));
+        this.cells.push(new Cell([pos[0] - 100, pos[1] + 100], this, newColor, sNum, wM1, wM2));
     }
 
     divideCell(cell) {
-        debugger
-        this.addCell(cell.pos);
-        this.addCell(cell.pos);
-        this.remove(cell);
+        this.addCell(cell.pos, cell.color, cell.sensoryNum, cell.weightMatrix1, cell.weightMatrix2);
+        // this.remove(cell);
     }
 
     addInitFood() {
-        for (let i=0; i <= Board.NUM_INIT_FOOD; i++) {
+        for (let i=0; i < Board.NUM_INIT_FOOD; i++) {
             this.food.push(new Food(this.randomPosition(), this))
         }
     }
 
     addStepFood() {
-        for (let i=0; i <= Board.NUM_STEP_FOOD; i++) {
-            this.food.push(new Food(this.randomPosition(), this))
+        for (let i=0; i < Board.NUM_STEP_FOOD; i++) {
+            if (Math.random() < 0.1) {
+                this.food.push(new Food(this.randomPosition(), this))
+            }
         }
     }
 
@@ -59,6 +61,7 @@ class Board {
 
     moveObjects() {
         this.cells.forEach( (cell) => {
+
             cell.move();
         })
     }
@@ -74,6 +77,12 @@ class Board {
             for (let j=0; j < this.food.length; j++) {
                 if (this.cells[i].isConsuming(this.food[j])) {
                     this.cells[i].consume(this.food[j])
+                }
+            }
+
+            for (let k=i+1; k < this.cells.length; k++) {
+                if (this.cells[i].isConsuming(this.cells[k])) {
+                    this.cells[i].consume(this.cells[k])
                 }
             }
         }
@@ -96,15 +105,15 @@ class Board {
     }
 
     static get NUM_INIT_CELLS() {
-        return 20;
+        return 30;
     }
 
     static get NUM_INIT_FOOD() {
-        return 20;
+        return 1000;
     }
 
     static get NUM_STEP_FOOD() {
-        return 1;
+        return 10;
     }
 }
 
