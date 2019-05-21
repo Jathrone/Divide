@@ -8,9 +8,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvasEl = document.getElementById("game-canvas");
     canvasEl.height = window.innerHeight;
     canvasEl.width = window.innerWidth;
+
     const ctx = canvasEl.getContext("2d");
     window.ctx = ctx;
-
+    
     const boardView = new BoardView(ctx, canvasEl.width, canvasEl.height);
     boardView.start();
+
+
+    canvasEl.addEventListener("click", (e) => {
+        const pos = {
+            x: e.clientX,
+            y: e.clientY
+        }
+
+
+        alert(`${boardView.board.cells.length}`)
+    })
 })
