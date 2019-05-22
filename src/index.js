@@ -1,4 +1,5 @@
 const BoardView = require("./board_view");
+const DisplayArea = require("./display_area");
 const { calcDistance } = require("./util");
 
 console.log("webpack is working!");
@@ -12,10 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const ctx = canvasEl.getContext("2d");
     window.ctx = ctx;
-    
-    const boardView = new BoardView(ctx, canvasEl.width, canvasEl.height);
-    boardView.start();
 
+    const displayAreaEl = document.getElementById("display-cell");
+    const displayArea = new DisplayArea(displayAreaEl);
+    
+    const boardView = new BoardView(ctx, canvasEl.width, canvasEl.height, displayArea);
+    boardView.start();
 
     canvasEl.addEventListener("click", (e) => {
         const pos = {
@@ -25,7 +28,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         boardView.board.cells.forEach((cell) => {
             if (calcDistance([pos.x, pos.y], cell.pos) < cell.radius + 10) {
-                alert(`cell number ${boardView.board.cells.indexOf(cell)}`)
+                // alert(`cell number ${boardView.board.cells.indexOf(cell)}`)
+                displayArea.cellNum = boardView.board.cells.indexOf(cell);
+                displayArea.displayCell = cell;
             }
         })
     })
