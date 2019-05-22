@@ -1,4 +1,5 @@
 const BoardView = require("./board_view");
+const { calcDistance } = require("./util");
 
 console.log("webpack is working!");
 
@@ -22,7 +23,29 @@ document.addEventListener("DOMContentLoaded", () => {
             y: e.clientY
         }
 
+        boardView.board.cells.forEach((cell) => {
+            if (calcDistance([pos.x, pos.y], cell.pos) < cell.radius + 10) {
+                alert(`cell number ${boardView.board.cells.indexOf(cell)}`)
+            }
+        })
+    })
 
-        alert(`${boardView.board.cells.length}`)
+    canvasEl.addEventListener("mousemove", (e) => {
+        const pos = {
+            x: e.clientX,
+            y: e.clientY
+        }
+        let setCursor = false;
+        boardView.board.cells.forEach((cell) => {
+            if (calcDistance([pos.x, pos.y], cell.pos) < cell.radius + 10) {
+                setCursor = true;
+            }
+        })
+        
+        if (setCursor) {
+            canvasEl.style.cursor = "pointer";
+        } else {
+            canvasEl.style.cursor = "default";
+        }
     })
 })
