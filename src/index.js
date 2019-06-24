@@ -53,5 +53,5 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             canvasEl.style.cursor = "default";
         }
-    })
+    });
 })

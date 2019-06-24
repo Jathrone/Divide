@@ -3,27 +3,36 @@ class DisplayArea {
         this.displayAreaEl = displayAreaEl;
         this.cellNum = null;
         this.displayCell = null;
+        this.currentDisplay = "toggles";
 
-        console.log({elementX: displayAreaEl.offsetTop, elementY: displayAreaEl.offsetLeft})
         this.draggable = false;
-        this.mouseDownX = 0;
-        this.mouseDownY = 0;
-        this.currMouseX = 0;
-        this.currMouseY = 0;
         this.displayAreaEl.addEventListener("mousedown", this.handleMouseDown.bind(this));
-
         this.displayAreaEl.addEventListener("mouseup", this.handleMouseUp.bind(this));
-
         this.displayAreaEl.addEventListener("mouseleave", this.handleMouseUp.bind(this))
-
         this.displayAreaEl.addEventListener("mousemove", this.handleDrag.bind(this))
+
+
+        const slidersDiv = this.displayAreaEl.querySelector("#toggles");
+        slidersDiv.addEventListener("mousedown", (e) => {
+            e.stopPropagation();
+        })
+
+        this.handleSelectButton = this.handleSelectButton.bind(this);
+        Array.from(this.displayAreaEl.querySelectorAll("button")).forEach((buttonEl) => {
+            buttonEl.addEventListener("click", () => {
+                this.handleSelectButton(buttonEl);
+            })
+        })
+    }
+
+    handleSelectButton(buttonEl) {
+        this.currentDisplay = buttonEl.innerText;
     }
 
     handleMouseDown(e) {
         this.elementX = this.displayAreaEl.offsetLeft;
         this.elementY = this.displayAreaEl.offsetTop;
         this.draggable = true;
-        console.log({ mouseDownX: e.clientX, mouseDownY: e.clientY })
         this.mouseDownX = e.clientX;
         this.mouseDownY = e.clientY;
     }
@@ -44,7 +53,16 @@ class DisplayArea {
 
     render() {
         // const displayCell = document.getElementById("display-cell");
-        this.displayAreaEl.innerHTML = this.displayCell ? `cell number ${this.cellNum}; ${this.displayCell.senseArray}`: "placeholder";
+        if (this.currentDisplay === "toggles") {
+            this.displayAreaEl.querySelector("#individual").style.display = "none";
+            this.displayAreaEl.querySelector("#population").style.display = "none";
+            this.displayAreaEl.querySelector("#toggles").style.display = "inherit";
+        } else if (this.currentDisplay === "individual") {
+            this.displayAreaEl.querySelector("#individual").style.display = "inherit";
+            this.displayAreaEl.querySelector("#population").style.display = "none";
+            this.displayAreaEl.querySelector("#toggles").style.display = "none";
+            this.displayAreaEl.querySelector("#individual").innerHTML = this.displayCell ? `cell number ${this.cellNum}; ${this.displayCell.senseArray}`: "placeholder";
+        }
     }
 }
 
