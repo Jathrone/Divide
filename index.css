@@ -1,0 +1,10 @@
+#display-cell {
+    position: absolute;
+    border: 1px solid red;
+    top: 20px;
+    right: 20px;
+    background-color: gray;
+    opacity: 0.8;
+    height: 350px;
+    width: 200px;
+}

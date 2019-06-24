@@ -7,6 +7,7 @@ console.log("webpack is working!");
 document.addEventListener("DOMContentLoaded", () => {
     console.log("we are ready to add stuff to canvas")
 
+
     const canvasEl = document.getElementById("game-canvas");
     canvasEl.height = window.innerHeight;
     canvasEl.width = window.innerWidth;
