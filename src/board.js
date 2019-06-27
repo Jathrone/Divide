@@ -1,6 +1,7 @@
 const Cell = require('./cell');
 const Food = require('./food');
 const { randomColor, randomNearbyColor } = require("./util");
+const clock = require('./clock');
 
 class Board {
     constructor(dimX, dimY, phylogeneticTree) {
@@ -17,6 +18,7 @@ class Board {
         for (let i=0; i < Board.NUM_INIT_CELLS; i++) {
             this.cells.push(new Cell(this.randomPosition(), this, randomColor()))
         }
+        this.phylogeneticTree.updateAlive(this.cells);
         for (let i in this.cells) {
             this.phylogeneticTree.addCell(this.cells[i], this.cells[i])
         }
@@ -33,9 +35,9 @@ class Board {
 
     divideCell(cell) {
         const {cell1, cell2} = this.addCell(cell.pos, cell.color, cell.sensoryNum, cell.weightMatrix1, cell.weightMatrix2);
+        this.remove(cell);
         this.phylogeneticTree.addCell(cell, cell1);
         this.phylogeneticTree.addCell(cell, cell2);
-        this.remove(cell);
     }
 
     addInitFood() {
@@ -104,17 +106,21 @@ class Board {
     }
 
     remove(item) {
-        this.food = this.food.filter((foodEle) => {
-            return (foodEle !== item)
-        })
-
-        this.cells = this.cells.filter((cell) => {
-            return (cell !== item)
-        })
+        if (item instanceof Cell) {
+            this.cells = this.cells.filter((cell) => {
+                return (cell !== item)
+            })
+            this.phylogeneticTree.editCell(item);
+            this.phylogeneticTree.updateAlive(this.cells);       
+        } else {
+            this.food = this.food.filter((foodEle) => {
+                return (foodEle !== item)
+            })
+        }
     }
 
     static get NUM_INIT_CELLS() {
-        return 3;
+        return 20;
     }
 
     static get NUM_INIT_FOOD() {
@@ -122,7 +128,7 @@ class Board {
     }
 
     static get NUM_STEP_FOOD() {
-        return 2;
+        return 10;
     }
 }
 

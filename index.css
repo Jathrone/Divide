@@ -5,6 +5,12 @@
     right: 20px;
     background-color: gray;
     opacity: 0.8;
-    height: 350px;
+    height: 450px;
     width: 200px;
+    overflow-x: scroll;
+}
+
+#population {
+    width: 200;
+    overflow-x: scroll;
 }

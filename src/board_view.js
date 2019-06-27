@@ -1,4 +1,5 @@
 const Board = require("./board");
+const clock = require("./clock");
 
 class BoardView {
     constructor(ctx, dimX, dimY, displayArea, phylogeneticTree) {
@@ -9,15 +10,27 @@ class BoardView {
     }
 
     start() {
+
+        // let frameCount = 0;
+        let then = Date.now();
+        let elapsed;
         const animateCallback = () => {
-            if (this.displayArea.paused) {
-                this.displayArea.render();
-                requestAnimationFrame(animateCallback);
-            } else {
-                this.board.draw(this.ctx);
-                this.board.step();
-                this.displayArea.render();
-                requestAnimationFrame(animateCallback);
+            requestAnimationFrame(animateCallback);
+
+            now = Date.now();
+            elapsed = now - then;
+            if (elapsed > 30) {
+                then = now;
+                if (this.displayArea.paused) {
+                    this.displayArea.render();
+                } else {
+                    // frameCount += 1;
+                    clock.tick();
+                    console.log(clock.time)
+                    this.board.draw(this.ctx);
+                    this.board.step();
+                    this.displayArea.render();
+                }
             }
         }
 

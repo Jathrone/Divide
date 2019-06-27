@@ -70,7 +70,17 @@ class DisplayArea {
             this.displayAreaEl.querySelector("#individual").style.display = "inherit";
             this.displayAreaEl.querySelector("#population").style.display = "none";
             this.displayAreaEl.querySelector("#toggles").style.display = "none";
-            this.displayAreaEl.querySelector("#individual").innerHTML = this.displayCell ? `cell number ${this.cellNum}; ${this.displayCell.senseArray}`: "placeholder";
+
+            if (this.displayCell) {
+                const c = document.getElementById("game-canvas");
+                const ctx = c.getContext("2d");
+                const cellImage = ctx.getImageData(this.displayCell.pos[0] - 100, this.displayCell.pos[1] - 200, 200, 400);
+                const cp = document.getElementById("cell-canvas");
+                const ctxp = cp.getContext("2d");
+                ctxp.putImageData(cellImage, 0, 0);
+
+            }
+            // this.displayAreaEl.querySelector("#individual").innerHTML = this.displayCell ? `cell number ${this.cellNum}; ${this.displayCell.senseArray}`: null;
         } else if (this.currentDisplay === "population") {
             this.displayAreaEl.querySelector("#individual").style.display = "none";
             this.displayAreaEl.querySelector("#population").style.display = "inherit";
