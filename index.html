@@ -5,15 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="./dist/bundle.js"></script>
+    <link rel="stylesheet" href="index.css">
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
     <title>Document</title>
 </head>
 <body>
-    <div id="display-cell">placeholder</div>
+    <div id="display-cell">
+        <button>toggles</button>
+        <button>population</button>
+        <button>individual</button>
+        <div id="toggles">
+            <label for="friction">Friction:</label>
+            <input type="range" min="1" max="20" value="10" class="slider" id="friction"/>
+            <label for="density">Density:</label>
+            <input type="range" min="1" max="20" value="10" class="slider" id="density" />
+            <button id="pause-button"></button>
+        </div>
+        <div id="population">
+            <svg></svg>
+        </div>
+        <div id="individual">
+            <canvas id="cell-canvas" width="200" height="400"></canvas>
+        </div>
+    </div>
     <canvas id="game-canvas"></canvas>
-    <label for="friction">Friction:</label>
-    <input type="range" min="1" max="20" value="10" class="slider" id="friction"/>
 
-    <label for="density">Density:</label>
-    <input type="range" min="1" max="20" value="10" class="slider" id="density" />
 </body>
 </html>

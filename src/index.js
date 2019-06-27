@@ -1,5 +1,6 @@
 const BoardView = require("./board_view");
 const DisplayArea = require("./display_area");
+const PhylogeneticTree = require("./phylogenetic_tree");
 const { calcDistance } = require("./util");
 
 console.log("webpack is working!");
@@ -7,17 +8,17 @@ console.log("webpack is working!");
 document.addEventListener("DOMContentLoaded", () => {
     console.log("we are ready to add stuff to canvas")
 
+
     const canvasEl = document.getElementById("game-canvas");
     canvasEl.height = window.innerHeight;
     canvasEl.width = window.innerWidth;
 
     const ctx = canvasEl.getContext("2d");
-    window.ctx = ctx;
 
     const displayAreaEl = document.getElementById("display-cell");
     const displayArea = new DisplayArea(displayAreaEl);
-    
-    const boardView = new BoardView(ctx, canvasEl.width, canvasEl.height, displayArea);
+    const phylogeneticTree = new PhylogeneticTree(displayArea);
+    const boardView = new BoardView(ctx, canvasEl.width, canvasEl.height, displayArea, phylogeneticTree);
     boardView.start();
 
     canvasEl.addEventListener("click", (e) => {
@@ -52,5 +53,5 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             canvasEl.style.cursor = "default";
         }
-    })
+    });
 })

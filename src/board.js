@@ -1,11 +1,14 @@
 const Cell = require('./cell');
 const Food = require('./food');
 const { randomColor, randomNearbyColor } = require("./util");
+const clock = require('./clock');
 
 class Board {
-    constructor(dimX, dimY) {
+    constructor(dimX, dimY, phylogeneticTree, displayArea) {
         this.dimX = dimX;
         this.dimY = dimY;
+        this.phylogeneticTree = phylogeneticTree;
+        this.displayArea =displayArea;
         this.cells = [];
         this.food = [];
         this.addCells();
@@ -16,17 +19,29 @@ class Board {
         for (let i=0; i < Board.NUM_INIT_CELLS; i++) {
             this.cells.push(new Cell(this.randomPosition(), this, randomColor()))
         }
+        this.phylogeneticTree.updateAlive(this.cells);
+        for (let i in this.cells) {
+            this.phylogeneticTree.addCell(this.cells[i], this.cells[i])
+        }
     }
 
     addCell(pos, color, sNum, wM1, wM2) {
         const newColor = randomNearbyColor(color);
-        this.cells.push(new Cell([pos[0] + 100, pos[1] - 100], this, newColor, sNum, wM1, wM2));
-        this.cells.push(new Cell([pos[0] - 100, pos[1] + 100], this, newColor, sNum, wM1, wM2));
+        const cell1 = new Cell([pos[0] + 100, pos[1] - 100], this, newColor, sNum, wM1, wM2);
+        const cell2 = new Cell([pos[0] - 100, pos[1] + 100], this, newColor, sNum, wM1, wM2); 
+        this.cells.push(cell1);
+        this.cells.push(cell2);
+        return {cell1, cell2};
     }
 
     divideCell(cell) {
-        this.addCell(cell.pos, cell.color, cell.sensoryNum, cell.weightMatrix1, cell.weightMatrix2);
-        // this.remove(cell);
+        const {cell1, cell2} = this.addCell(cell.pos, cell.color, cell.sensoryNum, cell.weightMatrix1, cell.weightMatrix2);
+        this.remove(cell);
+        this.phylogeneticTree.addCell(cell, cell1);
+        this.phylogeneticTree.addCell(cell, cell2);
+        if (cell === this.displayArea.displayCell) {
+            this.displayArea.displayCell = [cell1, cell2][Math.floor(Math.random() * 2)];
+        }
     }
 
     addInitFood() {
@@ -95,17 +110,21 @@ class Board {
     }
 
     remove(item) {
-        this.food = this.food.filter((foodEle) => {
-            return (foodEle !== item)
-        })
-
-        this.cells = this.cells.filter((cell) => {
-            return (cell !== item)
-        })
+        if (item instanceof Cell) {
+            this.cells = this.cells.filter((cell) => {
+                return (cell !== item)
+            })
+            this.phylogeneticTree.editCell(item);
+            this.phylogeneticTree.updateAlive(this.cells);       
+        } else {
+            this.food = this.food.filter((foodEle) => {
+                return (foodEle !== item)
+            })
+        }
     }
 
     static get NUM_INIT_CELLS() {
-        return 30;
+        return 20;
     }
 
     static get NUM_INIT_FOOD() {

@@ -1,5 +1,6 @@
 const MovingObject = require("./moving_object");
 const math = require("mathjs");
+const clock = require("./clock");
 const { randomVector, randomAngleAcc, randomWeightMatrix, calcDistance, magnitude, calcFriction, turnByAngle, distanceToCircleBoundary, vectorTo, sigmoid } = require("./util");
 
 class Cell extends MovingObject {
@@ -15,6 +16,8 @@ class Cell extends MovingObject {
         this.weightMatrix1 = weightMatrix1 ? math.add(math.multiply(weightMatrix1, 0.95), math.multiply(randomWeightMatrix1, 0.05)) : randomWeightMatrix1;
         this.weightMatrix2 = weightMatrix2 ? math.add(math.multiply(weightMatrix2, 0.95), math.multiply(randomWeightMatrix2, 0.05)) : randomWeightMatrix2;
         this.radius = Math.sqrt(this.energy) * 2;
+        this.id = "id-" + Math.random().toString(36).substr(2, 16);
+        this.initTime = clock.time;
     }
 
     getSenseDist(senseAng) {
