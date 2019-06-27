@@ -4,10 +4,11 @@ const { randomColor, randomNearbyColor } = require("./util");
 const clock = require('./clock');
 
 class Board {
-    constructor(dimX, dimY, phylogeneticTree) {
+    constructor(dimX, dimY, phylogeneticTree, displayArea) {
         this.dimX = dimX;
         this.dimY = dimY;
         this.phylogeneticTree = phylogeneticTree;
+        this.displayArea =displayArea;
         this.cells = [];
         this.food = [];
         this.addCells();
@@ -38,6 +39,9 @@ class Board {
         this.remove(cell);
         this.phylogeneticTree.addCell(cell, cell1);
         this.phylogeneticTree.addCell(cell, cell2);
+        if (cell === this.displayArea.displayCell) {
+            this.displayArea.displayCell = [cell1, cell2][Math.floor(Math.random() * 2)];
+        }
     }
 
     addInitFood() {

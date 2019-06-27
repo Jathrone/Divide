@@ -74,7 +74,7 @@ class DisplayArea {
             if (this.displayCell) {
                 const c = document.getElementById("game-canvas");
                 const ctx = c.getContext("2d");
-                const cellImage = ctx.getImageData(this.displayCell.pos[0] - 100, this.displayCell.pos[1] - 200, 200, 400);
+                const cellImage = ctx.getImageData(this.displayCell.pos[0] - 100, this.displayCell.pos[1] - 100, 200, 200);
                 const cp = document.getElementById("cell-canvas");
                 const ctxp = cp.getContext("2d");
                 ctxp.putImageData(cellImage, 0, 0);

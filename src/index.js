@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const displayAreaEl = document.getElementById("display-cell");
     const displayArea = new DisplayArea(displayAreaEl);
-    const phylogeneticTree = new PhylogeneticTree();
+    const phylogeneticTree = new PhylogeneticTree(displayArea);
     const boardView = new BoardView(ctx, canvasEl.width, canvasEl.height, displayArea, phylogeneticTree);
     boardView.start();
 

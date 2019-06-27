@@ -3,7 +3,7 @@ const clock = require("./clock");
 
 class BoardView {
     constructor(ctx, dimX, dimY, displayArea, phylogeneticTree) {
-        this.board = new Board(dimX, dimY, phylogeneticTree);
+        this.board = new Board(dimX, dimY, phylogeneticTree, displayArea);
         this.ctx = ctx;
         this.displayArea = displayArea;
         this.phylogeneticTree = phylogeneticTree

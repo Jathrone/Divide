@@ -1,5 +1,5 @@
 const clock = require("./clock");
-const { randomColor } = require("./util");
+const { updateDisplayCell } = require("./util");
 
 class TreeNode {
     constructor(cell) {
@@ -9,10 +9,9 @@ class TreeNode {
 }
 
 class PhylogeneticTree {
-    constructor() {
+    constructor(displayArea) {
         this.cells = new TreeNode(null);
-        window.d3 = d3;
-        window.cellsMap = this.cells;
+        this.displayArea = displayArea;
 
         this.svg = d3.select("#population svg")
             // .attr("width", 200)
@@ -42,10 +41,6 @@ class PhylogeneticTree {
 
     editCell(parent) {
         const found = this.findCell(this.cells, parent);
-        if (!found) {
-            debugger;
-        }
-        debugger;
         found.value.deathTime = clock.time;
     }
 
@@ -90,7 +85,7 @@ class PhylogeneticTree {
             .selectAll("path")
             .data(root.links())
             .join("path")
-            .attr("stroke-width", function (d) { return 0.1 * d.target.count(e => !e.children && !e.deathTime).value })
+            .attr("stroke-width", function (d) { return 0.1 + 0.1 * Math.log2(d.target.count(e => !e.children && !e.deathTime).value) })
             .attr("d", d3.linkHorizontal()
                 .x(d => d.y)
                 .y(d => d.x));
@@ -99,12 +94,16 @@ class PhylogeneticTree {
             .attr("stroke-linejoin", "round")
             .attr("stroke-width", 0.01)
             .selectAll("g")
-            .data(root.descendants().filter(function (d) { return !d.data.value || !d.data.value.deathTime }))
+            .data(root.descendants().filter(function (d) { return d.data.value && !d.data.value.deathTime }))
             .join("g")
-            .attr("transform", d => `translate(${d.y},${d.x})`);
+            .attr("transform", d => `translate(${d.y},${d.x})`)
+            .on("click", d => {
+                this.displayArea.displayCell = d.data.value;
+                this.render();
+            });
 
         newNode.append("circle")
-            .attr("fill", d => d.children ? "black" : "black")
+            .attr("fill", d => d.data.value === this.displayArea.displayCell ? "red" : "black")
             .attr("r", 1);
 
         // newNode.append("text")
