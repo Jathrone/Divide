@@ -3,8 +3,8 @@ class DisplayArea {
         this.displayAreaEl = displayAreaEl;
         this.cellNum = null;
         this.displayCell = null;
-        this.currentDisplay = "toggles";
-        this.paused = false;
+        this.currentDisplay = "population";
+        this.paused = true;
 
         this.draggable = false;
         this.displayAreaEl.addEventListener("mousedown", this.handleMouseDown.bind(this));
@@ -13,25 +13,35 @@ class DisplayArea {
         this.displayAreaEl.addEventListener("mousemove", this.handleDrag.bind(this))
 
 
-        const slidersDiv = this.displayAreaEl.querySelector("#toggles");
+        this.controlAreaEl = this.displayAreaEl.querySelector("#controls");
+        this.instructionsEl = this.displayAreaEl.querySelector("#instructions");
+
+        const slidersDiv = this.controlAreaEl.querySelector("#toggles");
         slidersDiv.addEventListener("mousedown", (e) => {
             e.stopPropagation();
         })
 
         this.handleSelectButton = this.handleSelectButton.bind(this);
-        Array.from(this.displayAreaEl.querySelectorAll("button")).forEach((buttonEl) => {
+        Array.from(this.controlAreaEl.querySelectorAll("button")).forEach((buttonEl) => {
             buttonEl.addEventListener("click", () => {
                 this.handleSelectButton(buttonEl);
             })
         })
 
-        this.displayAreaEl.querySelector("#toggles #pause-button").addEventListener("click", this.handleTogglePaused.bind(this));
+        this.controlAreaEl.querySelector("#toggles #pause-button").addEventListener("click", this.handleTogglePaused.bind(this));
+
+        this.instructionsEl.querySelector("#start-button").addEventListener("click", this.handleStart.bind(this));
     }
     
+    handleStart(e) {
+        e.preventDefault();
+        this.paused = false;
+        this.displayAreaEl.className = "minimized";
+    }
     handleTogglePaused(e) {
         e.preventDefault();
         this.paused = !this.paused;
-        this.displayAreaEl.querySelector("#toggles #pause-button").innerHTML = this.paused ? "resume" : "pause";
+        this.controlAreaEl.querySelector("#toggles #pause-button").innerHTML = this.paused ? "resume" : "pause";
     }
     handleSelectButton(buttonEl) {
         this.currentDisplay = buttonEl.innerText;
@@ -61,30 +71,38 @@ class DisplayArea {
 
     render() {
         // const displayCell = document.getElementById("display-cell");
-        if (this.currentDisplay === "toggles") {
-            this.displayAreaEl.querySelector("#individual").style.display = "none";
-            this.displayAreaEl.querySelector("#population").style.display = "none";
-            this.displayAreaEl.querySelector("#toggles").style.display = "inherit";
-            this.displayAreaEl.querySelector("#toggles #pause-button").innerHTML = this.paused ? "resume" : "pause";
-        } else if (this.currentDisplay === "individual") {
-            this.displayAreaEl.querySelector("#individual").style.display = "inherit";
-            this.displayAreaEl.querySelector("#population").style.display = "none";
-            this.displayAreaEl.querySelector("#toggles").style.display = "none";
+        if (this.displayAreaEl.className === "maximized") {
+            this.controlAreaEl.style.display = "none";
+            this.instructionsEl.style.display = "flex";
+        } else if (this.displayAreaEl.className === "minimized") {
+            this.controlAreaEl.style.display = "inherit";
+            this.instructionsEl.style.display = "none";
 
-            if (this.displayCell) {
-                const c = document.getElementById("game-canvas");
-                const ctx = c.getContext("2d");
-                const cellImage = ctx.getImageData(this.displayCell.pos[0] - 100, this.displayCell.pos[1] - 100, 200, 200);
-                const cp = document.getElementById("cell-canvas");
-                const ctxp = cp.getContext("2d");
-                ctxp.putImageData(cellImage, 0, 0);
-
+            if (this.currentDisplay === "toggles") {
+                this.controlAreaEl.querySelector("#individual").style.display = "none";
+                this.controlAreaEl.querySelector("#population").style.display = "none";
+                this.controlAreaEl.querySelector("#toggles").style.display = "inherit";
+                this.controlAreaEl.querySelector("#toggles #pause-button").innerHTML = this.paused ? "resume" : "pause";
+            } else if (this.currentDisplay === "individual") {
+                this.controlAreaEl.querySelector("#individual").style.display = "inherit";
+                this.controlAreaEl.querySelector("#population").style.display = "none";
+                this.controlAreaEl.querySelector("#toggles").style.display = "none";
+    
+                if (this.displayCell) {
+                    const c = document.getElementById("game-canvas");
+                    const ctx = c.getContext("2d");
+                    const cellImage = ctx.getImageData(this.displayCell.pos[0] - 100, this.displayCell.pos[1] - 100, 200, 200);
+                    const cp = document.getElementById("cell-canvas");
+                    const ctxp = cp.getContext("2d");
+                    ctxp.putImageData(cellImage, 0, 0);
+    
+                }
+                // this.displayAreaEl.querySelector("#individual").innerHTML = this.displayCell ? `cell number ${this.cellNum}; ${this.displayCell.senseArray}`: null;
+            } else if (this.currentDisplay === "population") {
+                this.controlAreaEl.querySelector("#individual").style.display = "none";
+                this.controlAreaEl.querySelector("#population").style.display = "flex";
+                this.controlAreaEl.querySelector("#toggles").style.display = "none";
             }
-            // this.displayAreaEl.querySelector("#individual").innerHTML = this.displayCell ? `cell number ${this.cellNum}; ${this.displayCell.senseArray}`: null;
-        } else if (this.currentDisplay === "population") {
-            this.displayAreaEl.querySelector("#individual").style.display = "none";
-            this.displayAreaEl.querySelector("#population").style.display = "inherit";
-            this.displayAreaEl.querySelector("#toggles").style.display = "none";
         }
     }
 }

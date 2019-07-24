@@ -11,22 +11,55 @@
     <title>Document</title>
 </head>
 <body>
-    <div id="display-cell">
-        <button>toggles</button>
-        <button>population</button>
-        <button>individual</button>
-        <div id="toggles">
-            <label for="friction">Friction:</label>
-            <input type="range" min="1" max="20" value="10" class="slider" id="friction"/>
-            <label for="density">Density:</label>
-            <input type="range" min="1" max="20" value="10" class="slider" id="density" />
-            <button id="pause-button"></button>
+    <div id="display-cell" class="maximized">
+        <div id="instructions">
+            <h1>INSTRUCTIONS</h1>
+            <p>Welcome to Divide, an evolution simulator that highlights adaptive behaviors in an eat or be eaten world.
+                Divide is an ongoing project written with only Javascript. 
+                <a href="https://github.com/Jathrone/Divide">Any feedback is welcome!</a></p>
+            <section id="figures">
+                <figure id="first">
+                    <img src="images/cell_0.png" alt="resting cell" width="120px">
+                    <caption>This is a cell. It has a body and many feelers. A cell can move by accelerating forward or by turning. Each cell moves uniquely in response to its environment.</caption>
+                </figure>
+                <figure id="second">
+                    <img src="images/food_0.png" alt="food" width="120px">
+                    <caption>These green dots are food. They regularly spawn at random locations</caption>
+                </figure>
+                <figure id="third">
+                    <img src="images/eating_food.png" alt="cell eating food" width="120px">
+                    <img src="images/cell_sensing_cell.png" alt="cell_sensing_cell" width="120px">
+                    <caption>A cell can sense food through its feelers and move around to absorb food. Cells can also sense/consume each other this way. As a cell eats, it grows. After reaching a critical size, a cell will divide, passing its movement 'genes'--bearing minor mutations--to its progeny.</caption>
+                </figure>
+            </section>
+            <button id="start-button">START</button>
         </div>
-        <div id="population">
-            <svg></svg>
-        </div>
-        <div id="individual">
-            <canvas id="cell-canvas" width="200" height="400"></canvas>
+        <div id="controls">
+            <nav id="controls-nav">
+                <button>toggles</button>
+                <button>population</button>
+                <button>individual</button>
+            </nav>
+            <div id="toggles">
+                Want to play god with physics? Friction dictates how easy it is to move, and density dictates how much energy is required.
+                <label for="friction">Friction:</label>
+                <input type="range" min="1" max="20" value="10" class="slider" id="friction"/>
+                <label for="density">Density:</label>
+                <input type="range" min="1" max="20" value="10" class="slider" id="density" />
+                <button id="pause-button"></button>
+            </div>
+            <div id="population">
+                <div>
+                    This is a live visualization of the cells' genetic history.
+                    Each fork represents a division event, and each black node is a living descendant.
+                    Try clicking on one of them to see it in the individual panel.
+                </div>
+                <svg></svg>
+            </div>
+            <div id="individual">
+                Click on a cell, or on a corresponding node in the population panel, to observe it here
+                <canvas id="cell-canvas" width="200" height="400"></canvas>
+            </div>
         </div>
     </div>
     <canvas id="game-canvas"></canvas>

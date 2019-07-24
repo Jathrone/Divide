@@ -53,8 +53,6 @@ class MovingObject {
         ctx.fill();
         
         ctx.fillStyle = "black";
-        ctx.textAlign = "center";
-        ctx.fillText(this.energy, this.pos[0], this.pos[1])
     }
 
     move() {
