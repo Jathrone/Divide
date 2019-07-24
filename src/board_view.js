@@ -24,7 +24,6 @@ class BoardView {
                 if (this.displayArea.paused) {
                     this.displayArea.render();
                 } else {
-                    // frameCount += 1;
                     clock.tick();
                     console.log(clock.time)
                     this.board.draw(this.ctx);

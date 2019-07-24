@@ -126,9 +126,9 @@ class Cell extends MovingObject {
 
         ctx.fill();
 
-        ctx.fillStyle = "black";
-        ctx.textAlign = "center";
-        ctx.fillText(this.energy, this.pos[0], this.pos[1])
+        // ctx.fillStyle = "black";
+        // ctx.textAlign = "center";
+        // ctx.fillText(this.energy.toFixed(1), this.pos[0], this.pos[1])
         ctx.stroke();
 
         senseArrayTrueDist = math.multiply(math.matrix(this.senseArray), Cell.MAX_SENSE_DIST)._data;
