@@ -25,7 +25,6 @@ class BoardView {
                     this.displayArea.render();
                 } else {
                     clock.tick();
-                    console.log(clock.time)
                     this.board.draw(this.ctx);
                     this.board.step();
                     this.displayArea.render();
