@@ -25,8 +25,8 @@ Once a cell reaches an energy threshold, it will divide in two, passing on its m
 ## Screenshots
 
 ![Cells In Action!](https://github.com/Jathrone/Divide/blob/master/images/hd_divide_in_action.gif)
-![Display Panel: Population](https://github.com/Jathrone/Divide/blob/master/images/population_panel.png)
-![Display Panel: Individual](https://github.com/Jathrone/Divide/blob/master/images/individual_panel.png)
+<img width="340" alt="population_panel" src="https://github.com/Jathrone/Divide/blob/master/images/population_panel.png">
+<img width="300" alt="individual_panel" src="https://github.com/Jathrone/Divide/blob/master/images/individual_panel.png">
 
 ## Technical Info
  
